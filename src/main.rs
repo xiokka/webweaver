@@ -73,7 +73,12 @@ fn generate_index_html(title: &str, websites: Vec<Website>, tag_map: &HashMap<St
     <title>{}</title>
     <style>
         body {{
-            background-color: #feffee;
+	    background-color: #ffffff;
+	    opacity: 1;
+	    background-image:  linear-gradient(#6a0005 6.4px, transparent 6.4px),
+linear-gradient(90deg, #6a0005 6.4px, transparent 6.4px), linear-gradient(#6a0005 3.2px, transparent 3.2px), linear-gradient(90deg, #6a0005 3.2px, #ffffff 3.2px);
+	    background-size: 160px 160px, 160px 160px, 32px 32px, 32px 32px;
+	    background-position: -6.4px -6.4px, -6.4px -6.4px, -3.2px -3.2px, -3.2px -3.2px;
             color: #444;
             font-family: monospace;
             margin: 0;
@@ -81,18 +86,18 @@ fn generate_index_html(title: &str, websites: Vec<Website>, tag_map: &HashMap<St
         }}
         header {{
             background-color: #6a0005;
+	    color: white;
             text-align: center;
-            color: white;
             font-size: 18px; 
             font-weight: bold;
-            padding: 10px; 
+            padding: 10px;
             margin-bottom: 20px; /* Space below the header */
         }}
         .container {{
             display: flex; /* Use flexbox for two columns */
             max-width: 1200px;
             background-color: #feffee;
-            border: 1px solid #6a0005;
+            border: 3.2px solid #6a0005;
             margin: auto; 
         }}
         .entries {{
@@ -100,9 +105,9 @@ fn generate_index_html(title: &str, websites: Vec<Website>, tag_map: &HashMap<St
             padding: 10px;
         }}
         .tags {{
-            width: 200px; 
-            padding: 10px;
-            border-left: 1px solid #6a0005; 
+	    max-width: 20%;
+            padding: 30px;
+            border-left: 1px solid #6a0005;
         }}
         .item {{
             background-color: white; 
@@ -111,6 +116,7 @@ fn generate_index_html(title: &str, websites: Vec<Website>, tag_map: &HashMap<St
             padding: 15px;
         }}
         a {{
+	    font-weight: bold;
             color: #4CAF50;
             text-decoration: none;
         }}
@@ -146,11 +152,11 @@ fn generate_index_html(title: &str, websites: Vec<Website>, tag_map: &HashMap<St
     sorted_tags.sort_by(|a, b| a.to_lowercase().cmp(&b.to_lowercase()));
 
     // Add tags column
-    html.push_str("<div class=\"tags\"><h2>Tags:</h2><ul>");
+    html.push_str("<div class=\"tags\"><header>Tags</header>");
     for tag in sorted_tags {
-        html.push_str(&format!("<li><a href=\"{}.html#group1\">{}</a></li>", tag, tag));
+        html.push_str(&format!("<a href=\"{}.html#group1\">[{}]</a> ", tag, tag));
     }
-    html.push_str("</ul></div>"); // Close tags div
+    html.push_str("</div>"); // Close tags div
     html.push_str("</div></body></html>"); // Close container and body
     html
 }
@@ -166,7 +172,12 @@ fn generate_tag_html(tag: &str, websites: Vec<Website>) -> String {
     <title>{} - Tag</title>
     <style>
         body {{
-            background-color: #feffee;
+            background-color: #ffffff;
+            opacity: 1;
+            background-image:  linear-gradient(#6a0005 6.4px, transparent 6.4px),
+linear-gradient(90deg, #6a0005 6.4px, transparent 6.4px), linear-gradient(#6a0005 3.2px, transparent 3.2px), linear-gradient(90deg, #6a0005 3.2px, #ffffff 3.2px);
+            background-size: 160px 160px, 160px 160px, 32px 32px, 32px 32px;
+            background-position: -6.4px -6.4px, -6.4px -6.4px, -3.2px -3.2px, -3.2px -3.2px;
             color: #444;
             font-family: monospace;
             margin: 0;
@@ -185,7 +196,7 @@ fn generate_tag_html(tag: &str, websites: Vec<Website>) -> String {
             display: flex; /* Use flexbox for two columns */
             max-width: 1200px;
             background-color: #feffee;
-            border: 1px solid #6a0005;
+            border: 3.2px solid #6a0005;
             margin: auto; 
         }}
         .entries {{
@@ -193,7 +204,6 @@ fn generate_tag_html(tag: &str, websites: Vec<Website>) -> String {
             padding: 10px;
         }}
         .tags {{
-            width: 200px; /* Fixed width for tags column */
             padding: 10px;
             border-left: 1px solid #6a0005; /* Separator */
         }}
@@ -204,6 +214,7 @@ fn generate_tag_html(tag: &str, websites: Vec<Website>) -> String {
             padding: 15px;
         }}
         a {{
+	    font-weight: bold;
             color: #4CAF50;
             text-decoration: none;
         }}
@@ -217,13 +228,14 @@ fn generate_tag_html(tag: &str, websites: Vec<Website>) -> String {
         .group:target {{
                 display: block; /* Show the targeted group */
         }}
+
     </style>
 </head>
 <body>
     <div class="container">
         <div class="entries">
         	<header>
-            	Tag: {}
+            	{}
         	</header>
         "#,
         tag, tag
