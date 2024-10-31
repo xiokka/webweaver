@@ -1,6 +1,6 @@
 # webweaver
 ## Description
-Generate a bookmarks page from an XML file.
+Generate a sites directory from an XML file.
 
 The XML structure must be:
 ```xml
