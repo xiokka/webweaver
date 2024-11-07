@@ -38,7 +38,7 @@ fn websites_to_html(sites: Vec<Website>) -> String {
                 html.push_str("</div>"); // Close the previous group div
             }
             group += 1; // Increment the group counter
-            html.push_str(&format!("<div class=\"group\" id=\"group{}\">", group)); // Start a new group div
+            html.push_str(&format!("<div class=\"group\" id=\"{}\">", group)); // Start a new group div
         }
 
         // Add the site item
@@ -55,7 +55,7 @@ fn websites_to_html(sites: Vec<Website>) -> String {
     
     html.push_str("<center><nav>");
     for i in 1..group+1 {
-	html.push_str(&format!("<a href=\"#group{}\">{}</a> ", i, i));
+	html.push_str(&format!("<a href=\"#{}\">{}</a> ", i, i));
     }
     html.push_str("</nav></center>");
 
@@ -73,32 +73,32 @@ fn generate_index_html(title: &str, websites: Vec<Website>, tag_map: &HashMap<St
     <title>{}</title>
     <style>
         body {{
-	    background-color: #ffffff;
-	    opacity: 1;
-	    background-image:  linear-gradient(#6a0005 6.4px, transparent 6.4px),
-linear-gradient(90deg, #6a0005 6.4px, transparent 6.4px), linear-gradient(#6a0005 3.2px, transparent 3.2px), linear-gradient(90deg, #6a0005 3.2px, #ffffff 3.2px);
-	    background-size: 160px 160px, 160px 160px, 32px 32px, 32px 32px;
-	    background-position: -6.4px -6.4px, -6.4px -6.4px, -3.2px -3.2px, -3.2px -3.2px;
-            color: #444;
-            font-family: monospace;
-            margin: 0;
-            padding: 20px;
+		background-color: #2c2c2c;
+		opacity: 1;
+		background-image:  linear-gradient(#ffffff 1px, transparent 1px), linear-gradient(to right, #ffffff 1px, #2c2c2c 1px);
+		background-size: 20px 20px;
+		font-family: monospace;
+		font-size: 14px;
         }}
         header {{
-            background-color: #6a0005;
-	    color: white;
+            color: #9ad2d8;
             text-align: center;
-            font-size: 18px; 
+            font-size: 22px; 
             font-weight: bold;
-            padding: 10px;
-            margin-bottom: 20px; /* Space below the header */
+	    height: 80px;
         }}
+	header img {{
+		max-width: 100%;
+		float: left;
+	}}
         .container {{
             display: flex; /* Use flexbox for two columns */
             max-width: 1200px;
-            background-color: #feffee;
-            border: 3.2px solid #6a0005;
-            margin: auto; 
+	    color:#ffffff;
+	    background-color: #2c2c2c;
+	    margin: 0 auto;
+	    border: 1px solid #ffffff;
+	    padding: 10px;
         }}
         .entries {{
             flex: 1; /* Take remaining space */
@@ -107,22 +107,21 @@ linear-gradient(90deg, #6a0005 6.4px, transparent 6.4px), linear-gradient(#6a000
         .tags {{
 	    max-width: 20%;
             padding: 30px;
-            border-left: 1px solid #6a0005;
+            border-left: 1px solid white;
         }}
         .item {{
-            background-color: white; 
-            border: 1px solid #6a0005;
+            border: 1px solid white;
             margin: 10px 0; /* Margin for top and bottom */
             padding: 15px;
         }}
         a {{
-	    font-weight: bold;
-            color: #4CAF50;
-            text-decoration: none;
+            color: #9ad2d8; /* Text color for unvisited links */
+            text-decoration: none; /* Remove underline */
         }}
         a:hover {{
             text-decoration: underline;
         }}
+
 	.group {{
 		display: none; /* Hide all groups by default */
 	}}
@@ -137,7 +136,7 @@ linear-gradient(90deg, #6a0005 6.4px, transparent 6.4px), linear-gradient(#6a000
     <div class="container">
         <div class="entries">
         <header>
-            {}
+		{}
         </header>
         "#,
         title, title
@@ -154,9 +153,9 @@ linear-gradient(90deg, #6a0005 6.4px, transparent 6.4px), linear-gradient(#6a000
     // Add tags column
     html.push_str("<div class=\"tags\"><header>Tags</header>");
     for tag in sorted_tags {
-        html.push_str(&format!("<a href=\"{}.html#group1\">[{}]</a> ", tag, tag));
+        html.push_str(&format!("<a href=\"{}.html#1\">[{}]</a> ", tag, tag));
     }
-    html.push_str("</div>"); // Close tags div
+    html.push_str("<p>Powered by webweaver.</p></div>"); // Close tags div
     html.push_str("</div></body></html>"); // Close container and body
     html
 }
@@ -172,55 +171,56 @@ fn generate_tag_html(tag: &str, websites: Vec<Website>) -> String {
     <title>{} - Tag</title>
     <style>
         body {{
-            background-color: #ffffff;
-            opacity: 1;
-            background-image:  linear-gradient(#6a0005 6.4px, transparent 6.4px),
-linear-gradient(90deg, #6a0005 6.4px, transparent 6.4px), linear-gradient(#6a0005 3.2px, transparent 3.2px), linear-gradient(90deg, #6a0005 3.2px, #ffffff 3.2px);
-            background-size: 160px 160px, 160px 160px, 32px 32px, 32px 32px;
-            background-position: -6.4px -6.4px, -6.4px -6.4px, -3.2px -3.2px, -3.2px -3.2px;
-            color: #444;
-            font-family: monospace;
-            margin: 0;
-            padding: 20px;
+                background-color: #2c2c2c;
+                opacity: 1;
+                background-image:  linear-gradient(#ffffff 1px, transparent 1px), linear-gradient(to right, #ffffff 1px, #2c2c2c 1px);
+                background-size: 20px 20px;
+                font-family: monospace;
+		font-size: 14px;
         }}
         header {{
-            background-color: #6a0005;
+            color: #9ad2d8;
             text-align: center;
-            color: white;
-            font-size: 18px;
+            font-size: 22px;
             font-weight: bold;
-            padding: 10px; 
-            margin-bottom: 20px; 
+            height: 80px;
+        }}
+        header img {{
+                max-width: 100%;
+                float: left;
         }}
         .container {{
             display: flex; /* Use flexbox for two columns */
             max-width: 1200px;
-            background-color: #feffee;
-            border: 3.2px solid #6a0005;
-            margin: auto; 
+            color:#ffffff;
+            background-color: #2c2c2c;
+            margin: 0 auto;
+            border: 1px solid #ffffff;
+            padding: 10px;
         }}
+
         .entries {{
             flex: 1; /* Take remaining space */
             padding: 10px;
         }}
         .tags {{
-            padding: 10px;
-            border-left: 1px solid #6a0005; /* Separator */
+            max-width: 20%;
+            padding: 30px;
+            border-left: 1px solid white;
         }}
         .item {{
-            background-color: white; 
-            border: 1px solid #6a0005;
+            border: 1px solid white;
             margin: 10px 0; /* Margin for top and bottom */
             padding: 15px;
         }}
         a {{
-	    font-weight: bold;
-            color: #4CAF50;
-            text-decoration: none;
+            color: #9ad2d8; /* Text color for unvisited links */
+            text-decoration: none; /* Remove underline */
         }}
         a:hover {{
             text-decoration: underline;
         }}
+
         .group {{
                 display: none; /* Hide all groups by default */
         }}
@@ -274,7 +274,7 @@ fn main() -> std::io::Result<()> {
     let mut websites = channel.list.websites;
     websites.sort_by_key(|website| std::cmp::Reverse(website.score));
 
-    // Generate the tag map
+    // Generate tag map
     let mut tag_map: HashMap<String, Vec<Website>> = HashMap::new();
     for website in websites.clone() {
         for tag in website.tags.split(',') {
