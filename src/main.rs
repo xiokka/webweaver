@@ -4,10 +4,12 @@ use std::fs::{self, File};
 use std::io::Write;
 use serde_xml_rs::from_str;
 
-
+const WIDGET_HTML: &str = include_str!("widget.html");
 const INDEX_HTML: &str = include_str!("index.html");
 const TAG_HTML: &str = include_str!("tag.html");
 const SUBPAGE_HTML: &str = include_str!("subpage.html");
+const WIDGET_ITEM_HTML: &str = include_str!("widget_item.html");
+
 
 const ENTRIES_PER_PAGE:usize = 10;
 
@@ -27,11 +29,13 @@ impl Website {
 <div class="website">
     <a href="{url}" target="_blank">{title}</a>
     <p>{description}</p>
+    <p style="margin: 0;"><i>{tags}</i></p>
 </div>
 "#,
             url = self.url,
             title = self.title,
             description = self.description,
+	    tags = self.tags,
         )
     }
 }
@@ -90,12 +94,14 @@ fn main() -> std::io::Result<()> {
     let mut index_html:String = INDEX_HTML.to_string();
     index_html = index_html.replace("$TITLE", &channel.title);
     index_html = index_html.replace("$DESCRIPTION", &channel.description);
+    index_html = index_html.replace("$COUNT", &websites.len().to_string());
+
     let mut navcloud = String::new();
 
     let mut tags: Vec<_> = tag_map.keys().collect();
     tags.sort();
     for tag in tags {
-        navcloud += &format!("<a href=\"tags/{}/index.html\">{}</a> ", tag, tag);
+        navcloud += &format!("<a href=\"tags/{}/index.html\">{}({})</a> ", tag, tag, tag_map.get(tag).unwrap().len());
     }
 
     index_html = index_html.replace("$ENTRIES", &navcloud);
@@ -107,9 +113,13 @@ fn main() -> std::io::Result<()> {
     index_file.write_all(index_html.as_bytes()).expect("Unable to write index.html");
 
     // Generate and write each tag's HTML file
-    for (tag, websites) in tag_map {
+    for (tag, websites) in tag_map.clone() {
         generate_tag_html(tag, websites);
     }
+
+    // Generate widget
+    generate_widget_items(websites);
+
 
     println!("HTML files have been generated.");
     Ok(())
@@ -143,6 +153,22 @@ fn generate_tag_html(tag: String, websites: Vec<Website>) {
 
 }
 
+fn generate_widget_items(websites: Vec<Website>) {
+        let output_dir = format!("output/widget/");
+        let widget_index_html = WIDGET_HTML.replace("$WEBSITES_LEN", &websites.len().to_string());
+        std::fs::create_dir_all(&output_dir).expect("Failed to create widget directory");
+        let mut widget_index_file = File::create(format!("{}/index.html", output_dir)).expect("Unable to create widget HTML file");
+        widget_index_file.write_all(widget_index_html.as_bytes()).expect("Unable to write widget index HTML file");
+
+        for i in 0..websites.len() {
+                let widget_html = WIDGET_ITEM_HTML.to_string().replace("$ENTRIES", &websites[i].to_html());
+                let mut widget_file = File::create(format!("{}/{}.html", output_dir, i)).expect("Unable to create widget HTML file");
+                widget_file.write_all(widget_html.as_bytes()).expect("Unable to write widget HTML file");
+        }
+
+}
+
+
 
 fn generate_subpage(chunk: Vec<Website>) -> String {
 	let mut subpage_html:String = SUBPAGE_HTML.to_string();
@@ -153,3 +179,4 @@ fn generate_subpage(chunk: Vec<Website>) -> String {
 	subpage_html = subpage_html.replace("$ENTRIES", &entries);
 	return subpage_html;
 }
+
